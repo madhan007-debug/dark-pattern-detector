@@ -4,3 +4,4 @@ __pycache__/
 *.pyc
 model_store/
 .env
+backend/dev.db
