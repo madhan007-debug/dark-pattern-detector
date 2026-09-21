@@ -1,0 +1,71 @@
+text,label
+"Hurry! Sale ends in 05:32 minutes",fake_urgency
+"Only today! This deal disappears at midnight",fake_urgency
+"Act now before this offer expires",fake_urgency
+"Limited time offer - don't miss out",fake_urgency
+"Flash sale ending soon, grab it now",fake_urgency
+"This deal ends in 2 hours 15 minutes",fake_urgency
+"Hurry, stock won't last much longer",fake_urgency
+"Offer expires at 11:59 PM tonight",fake_urgency
+"Last chance to save 50% before time runs out",fake_urgency
+"Countdown: 00:45:12 remaining on this deal",fake_urgency
+"Your free trial will auto-renew into a paid subscription",subscription_trap
+"Cancel anytime, but you will be billed monthly until you do",subscription_trap
+"After your trial ends, your card will be charged automatically",subscription_trap
+"This subscription will continue unless you cancel before the renewal date",subscription_trap
+"You're signed up for recurring billing at $29.99 per month",subscription_trap
+"Free for 7 days, then $9.99/month billed to your card on file",subscription_trap
+"Your membership renews automatically each year",subscription_trap
+"By continuing you agree to auto-renewal of this plan",subscription_trap
+"This plan renews unless cancelled 24 hours before the trial ends",subscription_trap
+"Enjoy your trial - billing starts automatically after 3 days",subscription_trap
+"No, I don't want to save money on my order",confirmshaming
+"No thanks, I prefer paying full price and missing this deal",confirmshaming
+"No, I don't want to protect my purchase",confirmshaming
+"No thanks, I like overpaying for shipping",confirmshaming
+"No, I'd rather not get free returns on my order",confirmshaming
+"No, I don't care about my data being secure",confirmshaming
+"No thanks, I enjoy waiting longer for delivery",confirmshaming
+"No, I don't want to feel good about my purchase",confirmshaming
+"No thanks, I prefer to miss out on rewards points",confirmshaming
+"No, I don't want to save on this exclusive offer",confirmshaming
+"Yes, add the extended protection plan to my order",preticked_checkbox
+"Yes, sign me up for the newsletter and promotional emails",preticked_checkbox
+"Yes, include travel insurance with my booking",preticked_checkbox
+"Yes, add express shipping insurance to my cart",preticked_checkbox
+"Yes, subscribe me to the premium add-on service",preticked_checkbox
+"Yes, I'd like to add gift wrapping and card protection",preticked_checkbox
+"Yes, opt me into the loyalty rewards subscription",preticked_checkbox
+"Yes, add the recommended warranty extension",preticked_checkbox
+"Yes, include the optional service plan by default",preticked_checkbox
+"Yes, keep me subscribed to partner offers",preticked_checkbox
+"To cancel your subscription, please call our support line during business hours",forced_continuity
+"Cancellation requests must be submitted in writing by postal mail",forced_continuity
+"You must speak to a retention specialist before cancelling",forced_continuity
+"Please navigate through account settings, then billing, then contact support to cancel",forced_continuity
+"Cancellation is only available Monday to Friday, 9am to 5pm",forced_continuity
+"To stop your subscription, print and mail this form to our office",forced_continuity
+"You'll need to wait on hold for a representative to process your cancellation",forced_continuity
+"Deactivating your account requires a phone call, not an online option",forced_continuity
+"Our cancellation link is only visible after multiple confirmation screens",forced_continuity
+"You must confirm cancellation three separate times to proceed",forced_continuity
+"Only 2 left in stock, order now",scarcity_claim
+"15 people are viewing this item right now",scarcity_claim
+"Only 3 remaining at this price",scarcity_claim
+"47 people bought this in the last hour",scarcity_claim
+"Almost sold out - only 1 left",scarcity_claim
+"High demand: 22 people added this to their cart today",scarcity_claim
+"Only 5 rooms left at this rate",scarcity_claim
+"Stock is running low, only a few units remaining",scarcity_claim
+"12 people are booking this right now",scarcity_claim
+"Selling fast - only 4 left in your size",scarcity_claim
+"Thank you for your order, your receipt has been emailed to you",none
+"Our return policy allows returns within 30 days of purchase",none
+"Please enter your shipping address to continue checkout",none
+"You can track your order status from your account page",none
+"Contact our support team if you have any questions",none
+"Your payment was processed successfully",none
+"Please select your preferred delivery date",none
+"We offer free shipping on orders over $50",none
+"Sign in to view your saved items",none
+"Add this item to your wishlist",none
