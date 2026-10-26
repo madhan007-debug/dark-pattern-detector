@@ -60,13 +60,13 @@ model = DistilBertForSequenceClassification.from_pretrained(
 # ---- Step 4: Train ----
 training_args = TrainingArguments(
     output_dir="./results",
-    num_train_epochs=5,
+    num_train_epochs=25,
     per_device_train_batch_size=8,
     per_device_eval_batch_size=8,
     eval_strategy="epoch",
     save_strategy="no",
     logging_steps=5,
-    learning_rate=2e-5,
+    learning_rate=5e-5,
 )
 
 trainer = Trainer(

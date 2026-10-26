@@ -8,10 +8,8 @@ class _BlockedPackageStub(importlib.abc.MetaPathFinder, importlib.abc.Loader):
     """
     Windows Application Control blocks native DLLs inside scipy/scikit-learn.
     We don't need either package for text classification - transformers only
-    imports them for unrelated optional features (object detection loss,
-    generation candidate scoring). This intercepts any import of these
-    packages, at any depth, and returns a harmless empty stub instead of
-    touching the blocked files.
+    imports them for unrelated optional features. This intercepts any import
+    of these packages and returns a harmless empty stub instead.
     """
     STUB_ROOTS = ("scipy", "sklearn")
 
@@ -39,21 +37,32 @@ sys.meta_path.insert(0, _BlockedPackageStub())
 from transformers import DistilBertTokenizerFast, DistilBertForSequenceClassification
 import torch
 import os
+import re
 
-MODEL_PATH = os.path.join("..", "ml", "model_store")
+MODEL_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "ml", "model_store")
 
 tokenizer = DistilBertTokenizerFast.from_pretrained(MODEL_PATH)
 model = DistilBertForSequenceClassification.from_pretrained(MODEL_PATH)
 model.eval()
 
-def classify_text(text: str) -> dict:
-    inputs = tokenizer(text, return_tensors="pt", truncation=True, padding=True, max_length=64)
+
+def classify_text(text: str, threshold: float = 0.6) -> dict:
+    chunks = [c.strip() for c in re.split(r"[\n.!?]+", text) if 15 <= len(c.strip()) <= 250]
+    chunks = chunks[:40]
+    if not chunks:
+        return {"detected": False, "category": "none", "confidence": 0.0}
+
+    inputs = tokenizer(chunks, return_tensors="pt", truncation=True, padding=True, max_length=64)
     with torch.no_grad():
         outputs = model(**inputs)
     probs = torch.softmax(outputs.logits, dim=1)
-    pred_id = torch.argmax(probs, dim=1).item()
-    confidence = probs[0][pred_id].item()
-    label = model.config.id2label[pred_id]
-    if label == "none":
-        return {"detected": False, "category": "none", "confidence": round(confidence, 3)}
-    return {"detected": True, "category": label, "confidence": round(confidence, 3)}
+
+    best = {"detected": False, "category": "none", "confidence": 0.0}
+    for i in range(len(chunks)):
+        pred_id = torch.argmax(probs[i]).item()
+        label = model.config.id2label[pred_id]
+        conf = probs[i][pred_id].item()
+        if label != "none" and conf >= threshold and conf > best["confidence"]:
+            best = {"detected": True, "category": label, "confidence": round(conf, 3)}
+        print("ML flagged:", chunks[i], "->", label, round(conf, 3))
+    return best

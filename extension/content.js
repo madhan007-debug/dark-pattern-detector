@@ -1,3 +1,4 @@
+"use strict";
 function extractPageText() {
     return document.body.innerText.slice(0, 3000);
 }
@@ -27,29 +28,22 @@ function extractDomStructure() {
     });
     return elements;
 }
-async function scanPage() {
+let scanTimer;
+function sendScan() {
     const payload = {
         url: window.location.hostname,
         dom_text: extractPageText(),
         dom_structure: extractDomStructure(),
     };
-    try {
-        const response = await fetch("http://localhost:8000/scan", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(payload),
-        });
-        const data = await response.json();
-        chrome.storage.local.set({ lastScan: data });
-    }
-    catch (err) {
-        console.error("Dark Pattern Detector scan failed:", err);
-    }
+    chrome.runtime.sendMessage({ type: "SCAN_PAGE", payload: payload });
 }
-scanPage();
-const observer = new MutationObserver(() => {
-    scanPage();
+function scheduleScan() {
+    clearTimeout(scanTimer);
+    scanTimer = window.setTimeout(sendScan, 1500);
+}
+scheduleScan();
+new MutationObserver(scheduleScan).observe(document.body, {
+    childList: true,
+    subtree: true,
 });
-observer.observe(document.body, { childList: true, subtree: true });
-export {};
 //# sourceMappingURL=content.js.map

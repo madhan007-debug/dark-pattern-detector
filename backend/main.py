@@ -1,12 +1,27 @@
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from typing import List, Dict, Any, Optional
 
 from rule_engine import run_all_rules
-from classifier import classify_text
-from db_models import SessionLocal, Site, PatternType, LegalClause, Detection
+try:
+    from classifier import classify_text
+    ML_AVAILABLE = True
+except Exception as err:
+    print("Classifier unavailable, using rule engine only:", err)
+    ML_AVAILABLE = False
+
+    def classify_text(text: str) -> dict:
+        return {"detected": False, "category": "none", "confidence": 0.0}
+from db_models import SessionLocal, Site, PatternType, LegalClause, Detection, Feedback
 
 app = FastAPI()
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 
 class ScanRequest(BaseModel):
@@ -75,3 +90,23 @@ def scan(payload: ScanRequest):
 
     session.close()
     return {"url": payload.url, "detections": final_detections}
+
+
+class FeedbackRequest(BaseModel):
+    detection_id: int
+    correct: bool
+    comment: Optional[str] = None
+
+
+@app.post("/feedback")
+def feedback(payload: FeedbackRequest):
+    session = SessionLocal()
+    fb = Feedback(
+        detection_id=payload.detection_id,
+        correct=payload.correct,
+        comment=payload.comment,
+    )
+    session.add(fb)
+    session.commit()
+    session.close()
+    return {"status": "saved"}
