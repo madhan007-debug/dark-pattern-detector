@@ -12,4 +12,5 @@ declare function extractDomStructure(): DomElement[];
 declare let scanTimer: number | undefined;
 declare function sendScan(): void;
 declare function scheduleScan(): void;
+declare const observer: MutationObserver;
 //# sourceMappingURL=content.d.ts.map

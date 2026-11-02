@@ -110,3 +110,55 @@ def feedback(payload: FeedbackRequest):
     session.commit()
     session.close()
     return {"status": "saved"}
+
+SEVERITY = {
+    "fake_urgency": 15,
+    "subscription_trap": 20,
+    "confirmshaming": 10,
+    "preticked_checkbox": 15,
+    "forced_continuity": 25,
+    "scarcity_claim": 10,
+}
+
+
+@app.get("/report/{domain}")
+def report(domain: str):
+    session = SessionLocal()
+    site = session.query(Site).filter(Site.domain == domain).first()
+    if not site:
+        session.close()
+        return {"domain": domain, "trust_score": 100, "label": "No data yet", "scans": 0, "patterns": []}
+
+    wrong_ids = {fb.detection_id for fb in session.query(Feedback).filter(Feedback.correct == False).all()}
+    rows = (
+        session.query(Detection, PatternType)
+        .join(PatternType, Detection.pattern_type_id == PatternType.id)
+        .filter(Detection.site_id == site.id)
+        .all()
+    )
+
+    wrong_categories = {pt.category for det, pt in rows if det.id in wrong_ids}
+
+    best = {}
+    for det, pt in rows:
+        if pt.category in wrong_categories:
+            continue
+        best[pt.category] = max(best.get(pt.category, 0), det.confidence_score or 0)
+
+    penalty = sum(SEVERITY.get(cat, 10) * conf for cat, conf in best.items())
+    score = max(0, round(100 - penalty))
+    if score >= 80:
+        label = "Good"
+    elif score >= 50:
+        label = "Caution"
+    else:
+        label = "Poor"
+
+    session.close()
+    return {
+        "domain": domain,
+        "trust_score": score,
+        "label": label,
+        "scans": len(rows),
+        "patterns": [{"category": c, "max_confidence": round(v, 2)} for c, v in best.items()],
+    }

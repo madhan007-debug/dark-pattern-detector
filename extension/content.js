@@ -30,20 +30,27 @@ function extractDomStructure() {
 }
 let scanTimer;
 function sendScan() {
-    const payload = {
-        url: window.location.hostname,
-        dom_text: extractPageText(),
-        dom_structure: extractDomStructure(),
-    };
-    chrome.runtime.sendMessage({ type: "SCAN_PAGE", payload: payload });
+    try {
+        if (!chrome.runtime?.id) {
+            observer.disconnect();
+            return;
+        }
+        const payload = {
+            url: window.location.hostname || "local-test-page",
+            dom_text: extractPageText(),
+            dom_structure: extractDomStructure(),
+        };
+        chrome.runtime.sendMessage({ type: "SCAN_PAGE", payload: payload });
+    }
+    catch (err) {
+        observer.disconnect();
+    }
 }
 function scheduleScan() {
     clearTimeout(scanTimer);
     scanTimer = window.setTimeout(sendScan, 1500);
 }
+const observer = new MutationObserver(scheduleScan);
+observer.observe(document.body, { childList: true, subtree: true });
 scheduleScan();
-new MutationObserver(scheduleScan).observe(document.body, {
-    childList: true,
-    subtree: true,
-});
 //# sourceMappingURL=content.js.map

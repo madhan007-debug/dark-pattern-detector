@@ -1,4 +1,28 @@
 "use strict";
+function trustColor(score) {
+    if (score >= 80)
+        return "#2a9d8f";
+    if (score >= 50)
+        return "#e9a23b";
+    return "#e63946";
+}
+function addTrustBadge(container, domain) {
+    const badge = document.createElement("div");
+    badge.style.cssText =
+        "background:#fff;padding:8px 10px;margin-bottom:8px;border-radius:4px;box-shadow:0 1px 3px rgba(0,0,0,0.1);font-size:13px;";
+    badge.textContent = "Site trust score: loading...";
+    container.prepend(badge);
+    fetch("http://localhost:8000/report/" + encodeURIComponent(domain))
+        .then((r) => r.json())
+        .then((rep) => {
+        badge.innerHTML =
+            'Site trust score: <b style="color:' + trustColor(rep.trust_score) + '">' +
+                rep.trust_score + "/100</b> (" + rep.label + ")";
+    })
+        .catch(() => {
+        badge.textContent = "Trust score unavailable";
+    });
+}
 chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
     const resultsDiv = document.getElementById("results");
     const tab = tabs[0];
@@ -17,6 +41,7 @@ chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
         if (scan.detections.length === 0) {
             resultsDiv.innerHTML =
                 '<div class="none">No dark patterns detected on ' + scan.url + ".</div>";
+            addTrustBadge(resultsDiv, scan.url);
             return;
         }
         resultsDiv.innerHTML = "<div class='confidence'>Results for " + scan.url + "</div>";
@@ -55,6 +80,7 @@ chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
             div.querySelector(".fb-no").onclick = () => send(false);
             resultsDiv.appendChild(div);
         });
+        addTrustBadge(resultsDiv, scan.url);
     });
 });
 //# sourceMappingURL=popup.js.map
