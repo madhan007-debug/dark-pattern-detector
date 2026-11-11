@@ -1,0 +1,11 @@
+Test sentences: 48
+Accuracy: 46/48 = 95.8%
+
+class                precision   recall     f1
+confirmshaming            1.00     1.00   1.00
+fake_urgency              1.00     1.00   1.00
+forced_continuity         1.00     0.83   0.91
+none                      0.92     0.92   0.92
+preticked_checkbox        1.00     1.00   1.00
+scarcity_claim            1.00     1.00   1.00
+subscription_trap         0.86     1.00   0.92
